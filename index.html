@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>AND-Neuron</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    .slider-box { margin-bottom: 1em; }
+    svg text { font-size: 12px; font-family: monospace; }
+  </style>
+</head>
+<body>
+
+<h2>AND-neuron with sigmoid-activation</h2>
+<div style="display: flex; gap: 40px;">
+<div class="slider-box">
+  <label>x₁: <input type="range" id="x1" min="0" max="1" step="0.01" value="0"> <span id="x1val" style="display: inline-block; width: 40px;">0</span></label><br>
+  <label>x₂: <input type="range" id="x2" min="0" max="1" step="0.01" value="0"> <span id="x2val" style="display: inline-block; width: 40px;">0</span></label><br>
+  <label>w₁: 5</label><br>
+  <label>w₂: 5</label><br>
+  <label>b: -7.5</label>
+</div>
+
+<div>
+    <table border="1" cellpadding="5" style="border-collapse: collapse; text-align: center;">
+      <thead>
+        <tr>
+          <th>x₁</th>
+          <th>x₂</th>
+          <th>y = x₁ AND x₂</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>0</td><td>1</td><td>0</td></tr>
+        <tr><td>1</td><td>0</td><td>0</td></tr>
+        <tr><td>1</td><td>1</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+
+
+<svg width="500" height="300">
+  <!-- Inputs -->
+  <circle cx="50" cy="80" r="20" fill="#cce5ff"/>
+  <text x="50" y="80" text-anchor="middle" dominant-baseline="middle">x₁</text>
+  <circle cx="50" cy="180" r="20" fill="#cce5ff"/>
+  <text x="50" y="180" text-anchor="middle" dominant-baseline="middle">x₂</text>
+
+  <!-- lines -->
+  <line id="line1" x1="70" y1="80" x2="200" y2="130" stroke="black" stroke-width="3"/>
+  <text id="textx1" x="130" y="75" text-anchor="middle" font-size="10"></text>
+  <line id="line2" x1="70" y1="180" x2="200" y2="130" stroke="black" stroke-width="3"/>
+  <text id="textx2" x="130" y="185" text-anchor="middle" font-size="10"></text>
+
+  <!-- Neuron -->
+  <circle cx="200" cy="130" r="30" fill="#ffcccc"/>
+  <text x="200" y="130" text-anchor="middle" dominant-baseline="middle">Σ + σ</text>
+
+  <!-- Output -->
+  <line id="outputLine" x1="230" y1="130" x2="350" y2="130" stroke="gray" stroke-width="3"/>
+  <circle cx="370" cy="130" r="20" fill="#ccffcc"/>
+  <text x="370" y="130" text-anchor="middle" dominant-baseline="middle">y</text>
+
+  <!-- dynamic values -->
+  <text x="20" y=""
+  <text id="ztext" x="20" y="250">z = ...</text>
+  <text id="sigmoidtext" x="20" y="270">sigmoid(z) = ...</text>
+  <text id="outputtext" x="20" y="290" font-weight="bold">Output (round) = ...</text>
+  
+  
+</svg>
+
+
+
+
+<script>
+  const w1 = 5;
+  const w2 = 5;
+  const b = -7.5;
+  const x1Slider = document.getElementById('x1');
+  const x2Slider = document.getElementById('x2');
+  const x1Val = document.getElementById('x1val');
+  const x2Val = document.getElementById('x2val');
+  const zText = document.getElementById('ztext');
+  const sigText = document.getElementById('sigmoidtext');
+  const outText = document.getElementById('outputtext');
+
+  function sigmoid(z) {
+    return 1 / (1 + Math.exp(-z));
+  }
+
+  function update() {
+    const x1 = parseFloat(x1Slider.value);
+    const x2 = parseFloat(x2Slider.value);
+    x1Val.textContent = x1;
+    x2Val.textContent = x2;
+
+    const z = w1 * x1 + w2 * x2 + b;
+    const y = sigmoid(z);
+    const rounded = y >= 0.5 ? 1 : 0;
+
+    zText.textContent = `z = ${z.toFixed(2)}`;
+    sigText.textContent = `sigmoid(z) = ${y.toFixed(4)}`;
+    outText.textContent = `Output (round) = ${rounded}`;
+
+    // color set
+    document.getElementById("outputLine").setAttribute("stroke", y >= 0.5 ? "green" : "red");
+
+    // update weight texts
+    document.getElementById("textx1").textContent = x1.toFixed(2);
+    document.getElementById("textx2").textContent = x2.toFixed(2);
+  }
+
+  x1Slider.addEventListener('input', update);
+  x2Slider.addEventListener('input', update);
+  update();
+</script>
+
+</body>
+</html>
